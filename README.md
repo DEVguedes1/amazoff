@@ -156,7 +156,7 @@ Os bancos Riak KV, MongoDB, Cassandra e Neo4j aparecem em [documentação comple
 - Adones Gomes
 - Nicolas Guedes
 - Davi Renato
-- Eric Farias
+- Erick Farias
 
 A divisão individual de responsabilidades ainda não está definida.
 
@@ -167,8 +167,7 @@ A divisão individual de responsabilidades ainda não está definida.
 ├── frontend/
 │   ├── assets/
 │   ├── css/
-│   └── js/
-├── backend/                 # estrutura preparada para desenvolvimento futuro
+│   └── js/                 # estrutura preparada para desenvolvimento futuro
 ├── amazoff-backend/         # scaffold Spring Boot/Maven existente
 ├── docs/
 │   ├── architecture/
