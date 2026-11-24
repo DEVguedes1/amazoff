@@ -1,177 +1,90 @@
-# Sistema de Gerenciamento de Produtos e Estoque
+# AmazOFF
 
-## Visão geral
+O **AmazOFF** é um sistema acadêmico de gerenciamento de produtos e estoque, com interface web para consulta e administração de um catálogo. O projeto integra conteúdos de Estrutura de Dados, Tecnologias Web e Banco de Dados II. Esta documentação orienta o planejamento e o desenvolvimento; funcionalidades, integrações e propostas acadêmicas ainda precisam ser implementadas e validadas conforme indicado em cada documento.
 
-O projeto planeja um catálogo administrativo de produtos e estoque, inspirado na organização de painéis de e-commerce. Seu objetivo é integrar desenvolvimento web e estruturas de dados: oferecer operações de cadastro e controle de estoque e, ao mesmo tempo, demonstrar como uma tabela hash e uma árvore binária de busca atendem a necessidades diferentes de consulta e ordenação.
+## Objetivo acadêmico
 
-Esta etapa define a arquitetura e a documentação. A implementação será iniciada posteriormente pela equipe, a partir desta especificação.
+Planejar e desenvolver uma aplicação que permita gerenciar produtos e estoque enquanto demonstra estruturas de dados implementadas em Java, comunicação entre frontend e backend e persistência NoSQL. O projeto também permite estudar como diferentes modelos de banco podem apoiar necessidades distintas, segundo as orientações oficiais da disciplina.
 
-## Objetivos
+## Disciplinas
 
-- Planejar o cadastro, consulta, atualização e remoção de produtos.
-- Consultar produtos rapidamente pelo código.
-- Listar o catálogo em ordem crescente de código.
-- Identificar e alertar sobre produtos abaixo do estoque mínimo.
-- Demonstrar a aplicação e os custos das estruturas de dados implementadas manualmente.
+- **Estrutura de Dados:** Tabela Hash com encadeamento separado, Árvore Binária de Busca convencional, análise de complexidade e consistência entre estruturas.
+- **Tecnologias Web:** interface em HTML, CSS e JavaScript Vanilla; backend Java/Spring Boot; API REST e comunicação HTTP/JSON.
+- **Banco de Dados II:** tecnologias consideradas incluem Riak KV e MongoDB inicialmente, e Cassandra e Neo4j como possibilidades futuras. A distribuição é **PROPOSTA**, pois a especificação do professor ainda está pendente.
+
+## Funcionalidades previstas
+
+- Cadastrar, consultar pelo código, atualizar e remover produtos.
+- Listar produtos e pesquisar por nome.
+- Organizar e filtrar produtos por categoria.
+- Identificar produtos com estoque baixo.
+- Exibir informações e detalhes dos produtos.
+
+O escopo poderá ser ampliado conforme as orientações dos professores. Avaliações e comentários são possibilidades complementares ainda não confirmadas.
+
+## Tecnologias e arquitetura
+
+- **Frontend:** HTML, CSS e JavaScript puro (Vanilla JavaScript).
+- **Backend:** Java, Spring Boot para disponibilização da API REST e Maven para dependências e build.
+- **Organização:** monólito modular, com módulos de responsabilidade clara dentro de uma aplicação backend. Não estão previstos microserviços nesta etapa.
+- **Comunicação:** requisições HTTP e troca de dados JSON entre frontend e backend.
+
+O frontend apresenta catálogo e controles, envia solicitações à API e mostra resultados. O backend coordena regras de negócio, estruturas de dados, persistência e integrações externas. A documentação de [Arquitetura](docs/architecture/README.md) descreve camadas, fluxo e pendências.
+
+## Estruturas de dados
+
+A proposta usa uma Tabela Hash indexada pelo código para busca rápida e uma ABB convencional, sem balanceamento automático, para ordenar produtos por código. Ambas deverão manter referências aos mesmos objetos de produto. Um componente coordenador chamado provisoriamente `EstoqueManager` deverá sincronizar operações entre elas. Consulte a documentação detalhada em [Estruturas de Dados](docs/structures/README.md).
+
+## Bancos de dados
+
+Como proposta inicial, Riak KV poderá guardar registros brutos importados da DummyJSON e MongoDB persistir o catálogo operacional transformado. Cassandra para histórico de estoque e Neo4j para relacionamentos ficam para avaliação futura. Essas responsabilidades dependem da especificação oficial de Banco de Dados II; veja [Banco de Dados](docs/database/README.md).
 
 ## Equipe
 
 - Adones Gomes
 - Nicolas Guedes
 - Davi Renato
+- Eric Farias
 
-## Stack tecnológica prevista
+A divisão individual de atividades ainda não está definida e não é presumida nesta documentação.
 
-- **Backend:** Node.js puro e módulos nativos para disponibilizar a API, sem ORM ou banco de dados externo.
-- **Armazenamento:** memória do processo, com estruturas de dados próprias.
-- **Frontend:** HTML5 semântico, CSS3 responsivo e JavaScript Vanilla ES6+, usando `fetch` para acessar a API.
-- **Versionamento:** Git e GitHub.
+## Estrutura do repositório
 
-## Arquitetura planejada
-
-O navegador apresenta o catálogo e os controles administrativos. O JavaScript do frontend enviará solicitações à API HTTP do Node.js. Um serviço `EstoqueManager` coordenará as operações e manterá consistência entre as estruturas.
-
-| Componente | Papel previsto |
-|---|---|
-| Frontend HTML/CSS/JS | Exibir produtos, formulários, estado do estoque e alertas; enviar operações à API |
-| API Node.js | Receber e validar solicitações HTTP e devolver respostas ao frontend |
-| `EstoqueManager` | Coordenar cadastro, consulta, atualização, remoção e configuração de estoque mínimo |
-| Tabela Hash | Indexar pelo código para detectar duplicidade e realizar busca rápida |
-| ABB | Organizar os códigos e fornecer listagem crescente pelo percurso *in-order* |
-| `Produto` | Representar código, nome, descrição, preço, quantidade e estoque mínimo |
-
-As estruturas deverão guardar referências para o mesmo objeto `Produto`, sem duplicar os dados. O código do produto será a chave da Tabela Hash e a chave de ordenação da ABB. A Hash usará encadeamento separado para tratar colisões. A ABB não é auto-balanceada; portanto, seu custo depende da forma da árvore.
-
-## Funcionalidades planejadas
-
-1. Cadastrar produto, validando os campos e verificando duplicidade pela Tabela Hash.
-2. Consultar produto por código pela Tabela Hash e apresentar detalhes e passos da busca para fins didáticos.
-3. Atualizar a quantidade em estoque por código.
-4. Remover um produto de ambas as estruturas.
-5. Listar todos os produtos em ordem crescente de código pelo percurso *in-order* da ABB.
-6. Definir quantidade mínima global e/ou por produto e alertar quando a quantidade estiver abaixo do limite aplicável.
-
-## Complexidade assintótica prevista
-
-| Operação | Tabela Hash (encadeamento separado) | ABB |
-|---|---:|---:|
-| Cadastro/inserção | O(1) médio para localizar/inserir no bucket; O(n) no pior caso de colisões | O(log n) em árvore balanceada; O(n) no pior caso |
-| Consulta por código | O(1) médio; O(n) no pior caso | O(log n) em árvore balanceada; O(n) no pior caso |
-| Atualização por código | O(1) médio; O(n) no pior caso | O(log n) em árvore balanceada; O(n) no pior caso |
-| Remoção por código | O(1) médio; O(n) no pior caso | O(log n) em árvore balanceada; O(n) no pior caso |
-| Listagem crescente | O(n) para percorrer todos os buckets, sem garantia de ordenação | O(n) pelo percurso *in-order* |
-
-`n` representa a quantidade de produtos. A ABB especificada não se auto-balanceia: O(log n) descreve o caso balanceado, e não uma garantia para qualquer entrada.
-
-## Diagramas principais
-
-### Casos de uso e fluxo funcional
-
-```mermaid
-flowchart LR
-  U[Usuário] --> UI[Painel web]
-  UI --> C[Cadastrar produto]
-  C --> V{Código já cadastrado?}
-  V -- Sim --> D[Informar duplicidade]
-  V -- Não --> I[Inserir referência na Hash e na ABB]
-  UI --> B[Busca rápida por código]
-  B --> H[Consultar Tabela Hash]
-  H --> R[Exibir dados e passos da busca]
-  UI --> A[Atualizar quantidade]
-  A --> S[Atualizar o objeto Produto compartilhado]
-  UI --> X[Remover produto]
-  X --> E[Remover da Hash e da ABB]
-  UI --> L[Listar catálogo]
-  L --> O[Percurso in-order da ABB]
-  O --> Q[Exibir códigos em ordem crescente]
-  UI --> M[Verificar estoque baixo]
-  M --> F[Comparar quantidade com mínimo aplicável]
-  F --> G[Exibir alerta de reposição]
+```text
+.
+├── frontend/
+│   ├── assets/
+│   ├── css/
+│   └── js/
+├── backend/
+│   └── src/
+│       ├── main/java/com/amazoff/
+│       │   ├── controller/  model/  dto/  service/
+│       │   ├── structures/hash/  structures/tree/
+│       │   ├── repository/  integration/
+│       │   └── config/  exception/
+│       ├── main/resources/
+│       └── test/java/com/amazoff/
+├── docs/
+│   ├── architecture/  api/  database/  structures/  backlog/
+│   ├── AI_PROMPTS.md
+│   └── MODELAGEM_MERMAID.md
+├── docker/
+└── amazoff-backend/  # scaffold Spring Boot existente no repositório
 ```
 
-### Classes e objetos compartilhados
+As pastas de `frontend/`, `backend/` e `docker/` preparadas para o desenvolvimento podem conter apenas `.gitkeep`. A árvore `amazoff-backend/` já existe e contém um scaffold Spring Boot/Maven e uma classe de inicialização gerada; isso, por si só, não indica que funcionalidades do AmazOFF estejam implementadas. A equipe deverá decidir como esse scaffold se relaciona com a estrutura-alvo `backend/`. Os arquivos existentes foram preservados.
 
-```mermaid
-classDiagram
-  class Produto {
-    +String codigo
-    +String nome
-    +String descricao
-    +Number preco
-    +Number quantidade
-    +Number estoqueMinimo
-  }
-  class NoABB {
-    +Produto produto
-    +NoABB esquerda
-    +NoABB direita
-  }
-  class ArvoreBinariaBusca {
-    +NoABB raiz
-    +inserir(produto)
-    +buscar(codigo)
-    +remover(codigo)
-    +percursoEmOrdem()
-  }
-  class TabelaHash {
-    +buckets
-    +inserir(produto)
-    +buscar(codigo)
-    +atualizar(codigo, dados)
-    +remover(codigo)
-  }
-  class EstoqueManager {
-    +TabelaHash tabela
-    +ArvoreBinariaBusca arvore
-    +cadastrar(dados)
-    +consultar(codigo)
-    +atualizarEstoque(codigo, quantidade)
-    +remover(codigo)
-    +listarOrdenado()
-  }
-  EstoqueManager *-- TabelaHash
-  EstoqueManager *-- ArvoreBinariaBusca
-  ArvoreBinariaBusca *-- NoABB
-  TabelaHash --> Produto : referência ao objeto
-  NoABB --> Produto : mesma referência
-```
+## Documentação técnica
 
-### Sequência de cadastro e consulta
+- [Arquitetura](docs/architecture/README.md) — módulos, fluxo e decisões arquiteturais.
+- [Estruturas de Dados](docs/structures/README.md) — Hash, ABB, operações e complexidade.
+- [Banco de Dados](docs/database/README.md) — papéis propostos para os bancos e DummyJSON.
+- [Backlog](docs/backlog/README.md) — épicos, tarefas, dependências e acompanhamento.
+- [API](docs/api/README.md) — papel da API e estado da definição do contrato.
+- [Diagramas Mermaid](docs/MODELAGEM_MERMAID.md) — representações conceituais de arquitetura e dados.
+- [Orientações para IA](docs/AI_PROMPTS.md) — cuidados para apoiar o desenvolvimento com ferramentas de IA.
 
-```mermaid
-sequenceDiagram
-  actor U as Usuário
-  participant F as Frontend
-  participant API as API Node
-  participant EM as EstoqueManager
-  participant H as Tabela Hash
-  participant A as ABB
-  U->>F: Preenche dados do produto
-  F->>API: Solicita cadastro
-  API->>EM: cadastrar(dados)
-  EM->>H: buscar(codigo) para validar duplicidade
-  H-->>EM: código disponível ou duplicado
-  alt Código disponível
-    EM->>H: inserir(referência de Produto)
-    EM->>A: inserir(a mesma referência)
-    EM-->>API: Produto cadastrado
-    API-->>F: Confirmação
-  else Código duplicado
-    EM-->>API: Erro de duplicidade
-    API-->>F: Mensagem de validação
-  end
-  U->>F: Consulta código
-  F->>API: Solicita busca pelo código
-  API->>EM: consultar(codigo)
-  EM->>H: buscar(codigo)
-  H-->>EM: Produto e passos examinados
-  EM-->>API: Resultado da busca
-  API-->>F: Detalhes do produto e passos
-  F-->>U: Apresenta resultado
-```
+## Estado e decisões pendentes
 
-Para os diagramas detalhados de entidades, arquitetura cliente-servidor e fluxos internos das estruturas, consulte [docs/MODELAGEM_MERMAID.md](docs/MODELAGEM_MERMAID.md).
-
-## Governança de IA
-
-Todo prompt enviado a ferramentas de IA para este projeto deverá ser registrado em [docs/AI_PROMPTS.md](docs/AI_PROMPTS.md), com data, autor, ferramenta, objetivo, arquivos resultantes e o texto literal do prompt.
+As funcionalidades descritas são planejadas. O contrato da API, as responsabilidades oficiais dos bancos, a estratégia de sincronização entre estruturas e persistência, o escopo de avaliações/comentários, requisitos de implantação e a distribuição das tarefas ainda precisam ser definidos. O backlog não estabelece prazos; responsáveis devem ser combinados pela equipe.
