@@ -1017,3 +1017,212 @@ Ao final, apresente um resumo contendo:
 Objetivo final: deixar o repositório AmazOFF com uma documentação técnica consistente, que sirva como referência oficial de planejamento para os quatro integrantes antes do início da implementação.
 
 
+
+# Tarefa: Documentar os requisitos oficiais do projeto AmazOFF no README principal
+
+Você deverá analisar o repositório atual do AmazOFF e atualizar seu README principal (`README.md`), organizando e documentando os requisitos funcionais, não funcionais, regras de negócio e requisitos estruturais do projeto.
+
+## 1. Objetivo
+
+Produzir uma documentação clara, organizada e coerente com as especificações acadêmicas do AmazOFF, consolidando os requisitos das disciplinas de:
+
+- Tecnologias Web;
+- Estrutura de Dados;
+- Banco de Dados II.
+
+O README deverá funcionar como referência central dos requisitos do projeto para toda a equipe.
+
+## 2. Instruções obrigatórias antes de editar
+
+1. Analise a estrutura atual do repositório.
+2. Localize o README principal.
+3. Leia o conteúdo existente e preserve as informações que ainda forem pertinentes.
+4. Identifique a estrutura atual da aplicação e documente somente tecnologias e decisões que estejam confirmadas no projeto ou nas especificações fornecidas.
+5. Não invente funcionalidades, tecnologias, regras ou decisões arquiteturais.
+
+## 3. Requisitos funcionais
+
+Crie uma seção chamada **Requisitos Funcionais (RF)** e documente os seguintes requisitos:
+
+### Gerenciamento de produtos
+
+- RF-001: Cadastrar novos produtos.
+- RF-002: Consultar produtos pelo código.
+- RF-003: Editar informações de produtos cadastrados.
+- RF-004: Excluir produtos cadastrados.
+- RF-005: Atualizar a quantidade disponível em estoque.
+- RF-006: Listar produtos em ordem crescente de código.
+- RF-007: Identificar produtos com estoque baixo.
+
+### Catálogo e consulta
+
+- RF-008: Exibir os produtos cadastrados em formato de catálogo.
+- RF-009: Apresentar imagem, nome, preço, categoria e marca no catálogo.
+- RF-010: Permitir acessar os detalhes de cada produto.
+- RF-011: Exibir as informações completas do produto selecionado.
+- RF-012: Pesquisar produtos pelo nome.
+- RF-013: Filtrar produtos por categoria.
+
+### Avaliações e comentários
+
+- RF-014: Permitir atribuir notas aos produtos.
+- RF-015: Permitir adicionar comentários sobre os produtos.
+- RF-016: Exibir as avaliações cadastradas.
+- RF-017: Calcular e apresentar a média das avaliações de cada produto.
+
+## 4. Requisitos não funcionais
+
+Crie uma seção chamada **Requisitos Não Funcionais (RNF)**.
+
+Documente:
+
+- RNF-001: Na primeira etapa de desenvolvimento, utilizar JavaScript com arrays e objetos para armazenar e manipular registros em memória.
+- RNF-002: As operações deverão atualizar a interface dinamicamente.
+- RNF-003: A especificação inicial de Tecnologias Web não exige banco de dados, autenticação ou backend.
+- RNF-004: A solução deverá permitir evolução e integração com backend e persistência em banco de dados nas etapas posteriores.
+
+Não interprete a ausência de banco de dados na primeira etapa como uma proibição permanente de integração com bancos de dados.
+
+## 5. Requisitos estruturais de Estrutura de Dados
+
+Crie uma seção própria chamada **Requisitos Estruturais e Técnicos**.
+
+Documente:
+
+- RT-001: Utilizar uma Árvore Binária de Busca (ABB) para organizar os produtos.
+- RT-002: Utilizar a ABB para realizar listagens em ordem crescente de código.
+- RT-003: Utilizar uma tabela hash para permitir consultas de produtos pelo código.
+
+Deixe claro que essas estruturas são exigências da atividade de Estrutura de Dados.
+
+Não determine arbitrariamente técnicas de balanceamento, tratamento de colisões ou algoritmos específicos que não tenham sido aprovados.
+
+## 6. Regras de negócio
+
+Crie uma seção chamada **Regras de Negócio (RN)**.
+
+Documente:
+
+- RN-001: Cada produto deverá possuir informações que permitam sua identificação e consulta.
+- RN-002: A quantidade disponível em estoque deverá ser mantida como informação do produto.
+- RN-003: Avaliações e comentários deverão estar associados aos respectivos produtos.
+- RN-004: A média apresentada deverá representar as notas recebidas pelo produto.
+- RN-005: A listagem exigida pela atividade de Estrutura de Dados deverá seguir a ordem crescente do código.
+
+Não invente regras adicionais.
+
+## 7. Evolução e integração entre disciplinas
+
+Crie uma seção chamada **Evolução do Sistema e Integração entre Disciplinas**.
+
+Explique que o desenvolvimento acontece em etapas complementares:
+
+### Etapa 1 — Tecnologias Web
+
+- Desenvolvimento da aplicação web.
+- Gerenciamento de produtos.
+- Catálogo e detalhes dos produtos.
+- Pesquisa e filtros.
+- Avaliações e comentários.
+- Armazenamento inicial em memória utilizando arrays e objetos JavaScript.
+- Atualização dinâmica da interface.
+
+### Etapa 2 — Estrutura de Dados
+
+- Organização dos produtos por meio de ABB.
+- Consultas por código utilizando tabela hash.
+- Listagem ordenada dos produtos.
+
+### Etapa 3 — Banco de Dados II
+
+- Evolução da aplicação para persistência de dados.
+- Integração com backend.
+- Integração com os bancos de dados definidos para o projeto, respeitando as decisões técnicas aprovadas pela equipe e pela disciplina.
+
+**Importante:** o armazenamento em memória é uma etapa inicial do projeto, não a arquitetura definitiva de persistência.
+
+Não invente tecnologias ou bancos específicos caso não estejam confirmados no repositório ou na documentação existente.
+
+## 8. Modelo de dados
+
+Documente os atributos de produto previstos na especificação Web:
+
+- id;
+- name;
+- description;
+- price;
+- category;
+- brand;
+- image;
+- stock;
+- rating;
+- evaluations;
+- createdAt.
+
+Cada avaliação poderá conter:
+
+- id;
+- score;
+- comment;
+- createdAt.
+
+Explique que esse modelo representa a referência inicial da especificação Web e poderá ser adaptado durante a integração entre as disciplinas.
+
+Não remova o requisito de consulta por código da disciplina de Estrutura de Dados.
+
+## 9. Pontos que precisam permanecer pendentes
+
+Crie uma seção chamada **Definições Pendentes** e registre:
+
+1. Definir o limite numérico que caracteriza estoque baixo.
+2. Definir a relação entre o campo `id` da especificação Web e o código utilizado em Estrutura de Dados.
+3. Definir a escala permitida para as avaliações dos produtos.
+
+Não escolha valores arbitrários para essas definições.
+
+## 10. Organização do README
+
+Organize o documento com uma hierarquia clara de títulos e subtítulos.
+
+Sugestão de estrutura:
+
+1. Apresentação do AmazOFF.
+2. Objetivo do projeto.
+3. Escopo.
+4. Requisitos Funcionais.
+5. Requisitos Não Funcionais.
+6. Requisitos Estruturais e Técnicos.
+7. Regras de Negócio.
+8. Modelo de Dados.
+9. Evolução do Sistema e Integração entre Disciplinas.
+10. Definições Pendentes.
+
+Adapte a estrutura se o README já possuir seções úteis.
+
+## 11. Restrições de execução
+
+- Não altere arquivos de código.
+- Não crie classes, funções ou componentes.
+- Não instale dependências.
+- Não altere configurações.
+- Não modifique a arquitetura da aplicação.
+- Não exclua informações válidas do README.
+- Não invente tecnologias, funcionalidades ou decisões.
+- Não implemente os requisitos: apenas documente-os.
+
+## 12. Verificação final
+
+Após editar o README:
+
+1. Confira se todos os requisitos estão documentados.
+2. Verifique se os identificadores RF, RNF, RT e RN estão consistentes.
+3. Confira se não existem requisitos duplicados.
+4. Verifique se as três etapas de evolução estão corretamente descritas.
+5. Confirme que nenhum arquivo de implementação foi alterado.
+
+Ao finalizar, apresente um resumo contendo:
+- Arquivo atualizado.
+- Seções criadas ou modificadas.
+- Quantidade de requisitos documentados por categoria.
+- Definições que permaneceram pendentes.
+- Confirmação de que nenhum código-fonte foi alterado.
