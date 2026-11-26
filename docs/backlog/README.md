@@ -1,6 +1,6 @@
 # Backlog de desenvolvimento
 
-Este backlog organiza o trabalho planejado por épicos e fases, com dependências explícitas para apoiar distribuição e acompanhamento. Ele é uma base editável: **não é cronograma**, não estima duração e não atribui tarefas a pessoas. O escopo de Banco de Dados II deve ser revisto quando o professor fornecer as especificações oficiais. As tarefas refletem o planejamento atual e não declaram implementação concluída.
+Este backlog organiza trabalho por épicos e fases; **não é cronograma** e não declara implementação concluída. A especificação de referência é [`docs/specification/README.md`](../specification/README.md). Os anexos oficiais transcritos ainda precisam ser conferidos contra os originais; tarefas marcadas pendentes continuam sob responsabilidade da equipe.
 
 ## Como ler e atualizar
 
@@ -21,16 +21,16 @@ Todos os itens começam com status **Pendente** e responsável não atribuído. 
 
 ## Épico 1 — Planejamento e arquitetura
 
-**Fase 1 — Planejamento e preparação.** Primeiro consolida-se o que foi solicitado pelas disciplinas e as decisões necessárias. O detalhamento do Banco de Dados II aguarda a especificação do professor.
+**Fase 1 — Planejamento e preparação.** Consolidar as transcrições oficiais e resolver decisões de arquitetura e modelo ainda pendentes.
 
 | ID | Tarefa e descrição | Disciplina | Prioridade | Complexidade | Dependências | Critério de conclusão (DoD) | Responsável | Status |
 |---|---|---|---|---|---|---|---|---|
 | INT-001 | Consolidar requisitos conhecidos e separar requisitos confirmados de propostas e pendências. | Integração | Alta | Média | — | Requisitos funcionais e acadêmicos registrados; dúvidas explicitamente marcadas para validação. |  | Pendente |
 | INT-002 | Confirmar a arquitetura modular e fronteiras entre frontend, backend, estruturas e persistência. | Integração | Alta | Média | INT-001 | Decisões revisadas pela equipe e refletidas em `docs/architecture/README.md`. |  | Pendente |
-| WEB-001 | Confirmar tecnologias e organização: HTML/CSS/JS Vanilla, Java, Spring Boot, Maven e monólito modular. | Tecnologias Web | Alta | Pequena | INT-001 | Stack e limites registrados sem adotar microserviços ou decisões não aprovadas. |  | Pendente |
+| WEB-001 | Confirmar organização da entrega Web: HTML/CSS/JS Vanilla e estado em memória; separar das demais disciplinas. | Tecnologias Web | Alta | Pequena | INT-001 | Stack e limites Web registrados conforme especificação oficial, sem exigir backend ou banco. |  | Pendente |
 | INT-003 | Organizar repositório e alinhar o scaffold `amazoff-backend/` com a estrutura-alvo `backend/`. | Integração | Média | Média | INT-002, WEB-001 | Equipe decide e documenta qual diretório será fonte do projeto e como preservar artefatos existentes. |  | Pendente |
 | INT-004 | Definir responsabilidades individuais e forma de acompanhamento das tarefas. | Integração | Média | Pequena | INT-001 | Distribuição acordada pelos integrantes e registrada no backlog, sem pressupostos sobre disciplinas. |  | Pendente |
-| BD-001 | Obter e analisar a especificação oficial do professor de Banco de Dados II. | Banco de Dados II | Alta | Média | INT-001 | Requisitos oficiais registrados e propostas de banco revistas à luz deles. |  | Pendente |
+| BD-001 | Conferir transcrição da Aplicação Azul contra o documento oficial e registrar a proveniência. | Banco de Dados II | Alta | Média | INT-001 | Requisitos oficiais cotejados; versão/fonte registrada e propostas revisadas. |  | Pendente |
 
 ## Épico 2 — Estrutura de Dados
 
@@ -38,7 +38,7 @@ Todos os itens começam com status **Pendente** e responsável não atribuído. 
 
 | ID | Tarefa e descrição | Disciplina | Prioridade | Complexidade | Dependências | Critério de conclusão (DoD) | Responsável | Status |
 |---|---|---|---|---|---|---|---|---|
-| ED-001 | Definir unicidade, comparação e normalização do código de produto para Hash e ABB. | Estrutura de Dados | Alta | Pequena | INT-001 | Regra de chave documentada e igual nas duas estruturas. |  | Pendente |
+| ED-001 | Definir comparação e normalização do identificador único `Product.id` usado como código na Hash e ABB. | Estrutura de Dados | Alta | Pequena | INT-001 | Regra de chave documentada e igual nas duas estruturas, sem identificador concorrente. |  | Pendente |
 | ED-002 | Especificar função hash, capacidade, fator de carga e política de redimensionamento. | Estrutura de Dados | Média | Média | ED-001 | Decisões justificadas e casos de colisão definidos em documentação técnica. |  | Pendente |
 | ED-003 | Implementar Tabela Hash com encadeamento separado e operações de inserção, busca, atualização e remoção. | Estrutura de Dados | Alta | Grande | ED-002 | Operações obedecem chave e política definidas; colisões preservam todas as entradas distintas. |  | Pendente |
 | ED-004 | Criar testes das operações e colisões da Tabela Hash. | Estrutura de Dados | Alta | Média | ED-003 | Testes cobrem chave ausente, duplicidade, colisão, atualização e remoção, com resultados reproduzíveis. |  | Pendente |
@@ -55,26 +55,26 @@ Todos os itens começam com status **Pendente** e responsável não atribuído. 
 
 | ID | Tarefa e descrição | Disciplina | Prioridade | Complexidade | Dependências | Critério de conclusão (DoD) | Responsável | Status |
 |---|---|---|---|---|---|---|---|---|
-| WEB-002 | Preparar projeto Java/Spring Boot com Maven na localização decidida para o backend. | Tecnologias Web | Alta | Média | INT-003, WEB-001 | Projeto compila no ambiente acordado e segue a estrutura aprovada, sem configuração de ambiente não documentada. |  | Pendente |
-| WEB-003 | Definir modelo de produto e formatos de entrada/saída (DTOs), incluindo tipos e validações. | Tecnologias Web | Alta | Média | INT-001, WEB-001 | Modelo revisado pelas disciplinas e regras de campos obrigatórios/limites documentadas. |  | Pendente |
-| WEB-004 | Organizar módulos/camadas do backend para entrada HTTP, serviços, estruturas, persistência e integrações. | Tecnologias Web | Alta | Média | INT-002, WEB-002 | Responsabilidades separadas e regras centrais fora dos controllers, conforme arquitetura aprovada. |  | Pendente |
-| WEB-005 | Implementar serviços de negócio para operações acordadas de produto e estoque. | Tecnologias Web | Alta | Grande | WEB-003, WEB-004, ED-008 | Serviço coordena regras e estruturas; cenários funcionais acordados têm resultados verificáveis. |  | Pendente |
-| WEB-006 | Definir contrato REST, incluindo recursos, métodos, JSON, validações e respostas de erro. | Tecnologias Web | Alta | Média | WEB-003, INT-001 | Contrato revisado e registrado em `docs/api/README.md` antes de congelar os endpoints. |  | Pendente |
-| WEB-007 | Disponibilizar endpoints REST do contrato aprovado. | Tecnologias Web | Alta | Grande | WEB-005, WEB-006 | API implementa apenas operações aprovadas e documenta respostas e códigos HTTP observáveis. |  | Pendente |
-| WEB-008 | Tratar validações de entrada e erros de negócio de modo consistente na API. | Tecnologias Web | Alta | Média | WEB-006, WEB-007 | Entradas inválidas e recursos ausentes retornam respostas consistentes, sem expor detalhes internos indevidos. |  | Pendente |
+| WEB-002 | Manter a configuração Java existente em Gradle, sem a atribuir à entrega Web em memória. | Tecnologias Web | Alta | Média | INT-003, WEB-001 | Build Java usa Gradle e as entregas Web e BD II permanecem separadas. |  | Pendente |
+| WEB-003 | Definir modelo de produto e avaliação em JavaScript, incluindo campos e validações aprovadas. | Tecnologias Web | Alta | Média | INT-001, WEB-001 | Modelo cobre os campos oficiais e regras ainda não definidas ficam explícitas. |  | Pendente |
+| WEB-004 | Organizar interface e módulos JavaScript para catálogo, formulários e avaliações. | Tecnologias Web | Alta | Média | INT-002, WEB-001 | Separação de responsabilidades documentada; sem exigir backend, persistência ou controllers. |  | Pendente |
+| WEB-005 | Implementar operações locais em memória para produtos e avaliações. | Tecnologias Web | Alta | Grande | WEB-003, WEB-004 | Operações cobrem requisitos TW e atualizam arrays/objetos sem reload. |  | Pendente |
+| WEB-006 | Definir critérios funcionais e regras de interação da interface Web. | Tecnologias Web | Alta | Média | WEB-003, INT-001 | Pesquisa, filtros, erros e telas têm resultados verificáveis; sem contrato REST obrigatório. |  | Pendente |
+| WEB-007 | Implementar telas/fluxos locais do catálogo, detalhes e avaliações. | Tecnologias Web | Alta | Grande | WEB-005, WEB-006 | Fluxos aprovados funcionam com dados em memória. |  | Pendente |
+| WEB-008 | Validar entradas e apresentar erros/estados vazios na interface Web. | Tecnologias Web | Alta | Média | WEB-006, WEB-007 | Validações aprovadas e estados de inexistência/sem avaliações são visíveis e coerentes. |  | Pendente |
 
 ## Épico 4 — Integração e persistência inicial
 
-**Fase 3 — Backend e persistência inicial.** A sequência e o escopo dependem da confirmação oficial de Banco de Dados II. A proposta atual começa com Riak e MongoDB.
+**Fase 3 — Aplicação terminal e persistência poliglota.** Java/Gradle, menus de terminal, DAO/Repository e pelo menos dois bancos permitidos são exigidos; distribuição concreta e configuração precisam de aprovação.
 
 | ID | Tarefa e descrição | Disciplina | Prioridade | Complexidade | Dependências | Critério de conclusão (DoD) | Responsável | Status |
 |---|---|---|---|---|---|---|---|---|
 | BD-002 | Definir e preparar ambiente Riak conforme requisitos confirmados e recursos disponíveis. | Banco de Dados II | Alta | Média | BD-001, INT-002 | Ambiente reproduzível e instruções de execução/acesso documentadas sem credenciais versionadas. |  | Pendente |
-| BD-003 | Implementar persistência de registros brutos no Riak, caso o papel proposto seja aprovado. | Banco de Dados II | Alta | Grande | BD-002, INT-002 | Gravação, leitura, atualização e remoção por chave são demonstradas conforme especificação aprovada. |  | Pendente |
+| BD-003 | Implementar agregado Carrinho no Riak se a distribuição proposta for aprovada. | Banco de Dados II | Alta | Grande | BD-002, INT-002 | Leitura/escrita por chave, TTL 48h e conflitos demonstrados conforme configuração aprovada. |  | Pendente |
 | BD-004 | Definir e preparar ambiente MongoDB conforme requisitos confirmados e recursos disponíveis. | Banco de Dados II | Alta | Média | BD-001, INT-002 | Ambiente reproduzível e instruções documentadas sem credenciais versionadas. |  | Pendente |
-| BD-005 | Implementar persistência do catálogo operacional no MongoDB, caso aprovada. | Banco de Dados II | Alta | Grande | BD-004, WEB-003 | Operações necessárias ao catálogo persistem documentos e mantêm os dados recuperáveis pela aplicação. |  | Pendente |
-| BD-006 | Definir mapeamento e regras de importação entre DummyJSON e o modelo AmazOFF. | Integração | Alta | Média | BD-001, WEB-003 | Campos, identificadores, duplicidade e tratamento de campos ausentes documentados e revisados. |  | Pendente |
-| INT-005 | Implementar importação backend da DummyJSON, preservando bruto no Riak e catálogo transformado no MongoDB, se aprovado. | Integração | Média | Grande | BD-003, BD-005, BD-006, WEB-005 | Importação pode ser repetida conforme política definida; frontend consulta catálogo local sem chamada externa por carregamento. |  | Pendente |
+| BD-005 | Implementar agregados Cliente/Produto no MongoDB se a distribuição proposta for aprovada. | Banco de Dados II | Alta | Grande | BD-004, WEB-003 | Menus e repositories atendem às leituras/escritas e índices/shard key aprovados. |  | Pendente |
+| BD-006 | Definir modelos lógicos e mapeamento de atributos dos agregados BD aos documentos/linhas/chaves escolhidos. | Banco de Dados II | Alta | Média | BD-001, WEB-003 | Identificadores e campos dos agregados Cliente, Produto, Carrinho e Métricas são mapeados; fontes externas não presumidas. |  | Pendente |
+| INT-005 | Implementar integração entre agregados/bancos aprovados para os fluxos da Aplicação Azul. | Integração | Média | Grande | BD-003, BD-005, BD-006 | Leituras e escritas do domínio funcionam via serviços e repositories, sem pressupor DummyJSON ou integração Web. |  | Pendente |
 | INT-006 | Verificar fluxo integrado de importação, transformação, persistência e consulta do catálogo. | Integração | Alta | Média | INT-005, WEB-007 | Cenário de ponta a ponta confirma origem bruta, modelo operacional e resposta disponibilizada pelo backend. |  | Pendente |
 
 ## Épico 5 — Interface web
@@ -88,18 +88,18 @@ Todos os itens começam com status **Pendente** e responsável não atribuído. 
 | WEB-011 | Criar pesquisa por nome e filtros por categoria. | Tecnologias Web | Média | Média | WEB-010, WEB-006 | Busca e filtros apresentam resultados coerentes com os critérios definidos e permitem limpar/refazer consulta. |  | Pendente |
 | WEB-012 | Criar controles de gerenciamento para cadastro, atualização, remoção e consulta de produtos. | Tecnologias Web | Alta | Grande | WEB-009, WEB-006, WEB-008 | Formulários e ações apresentam confirmação ou erro e não simulam sucesso sem resposta da API. |  | Pendente |
 | WEB-013 | Apresentar identificação de estoque baixo e quantidade de estoque na interface. | Tecnologias Web | Média | Média | WEB-010, WEB-005 | Estado de estoque baixo usa a regra de mínimo aprovada e é distinguível visualmente. |  | Pendente |
-| INT-007 | Integrar frontend à API REST e validar fluxos de catálogo e administração. | Integração | Alta | Grande | WEB-007, WEB-008, WEB-010, WEB-011, WEB-012 | Interface consome API real por HTTP/JSON e fluxos acordados funcionam sem depender de dados simulados locais. |  | Pendente |
+| INT-007 | Avaliar eventual integração futura entre entregas sem remover os critérios originais de cada disciplina. | Integração | Alta | Grande | WEB-007, WEB-008, WEB-010, WEB-011, WEB-012 | Só executar se equipe aprovar; Web mantém escopo em memória e BD mantém menus de terminal requeridos. |  | Pendente |
 
 ## Épico 6 — Banco de Dados II: expansão
 
-**Fase 5 — Expansão de Banco de Dados II.** Nenhum banco desta fase deve ser adicionado só por constar na proposta: primeiro confirmar exigência, objetivo acadêmico e viabilidade.
+**Fase 5 — Fechamento da arquitetura de dados.** Pelo menos dois bancos permitidos são requisito; seleção, quóruns e desenhos de partição precisam ser confirmados.
 
 | ID | Tarefa e descrição | Disciplina | Prioridade | Complexidade | Dependências | Critério de conclusão (DoD) | Responsável | Status |
 |---|---|---|---|---|---|---|---|---|
 | BD-007 | Avaliar requisitos oficiais e adequação de Cassandra para histórico de movimentações. | Banco de Dados II | Média | Média | BD-001 | Decisão registrada com consultas, modelo conceitual, justificativa e custo de implementação. |  | Pendente |
-| BD-008 | Avaliar requisitos oficiais e adequação de Neo4j para relacionamentos entre produtos. | Banco de Dados II | Média | Média | BD-001 | Decisão registrada com entidades/relações candidatas, consultas, justificativa e custo de implementação. |  | Pendente |
+| BD-008 | Definir estratégia de eventos e agregação de métricas a cada 24h em banco permitido. | Banco de Dados II | Média | Média | BD-001 | Partição, janela, deduplicação e materialização documentadas e justificadas. |  | Pendente |
 | BD-009 | Definir responsabilidades definitivas e escopo dos bancos usados no projeto. | Banco de Dados II | Alta | Média | BD-001, BD-003, BD-005, BD-007, BD-008 | Matriz de bancos aprovada segundo especificação do professor e refletida na documentação. |  | Pendente |
-| INT-008 | Implementar integrações futuras de Cassandra e/ou Neo4j somente se solicitadas e aprovadas. | Integração | Baixa | Grande | BD-009 | Implementação limita-se aos bancos e operações aprovados; documentação e demonstração atendem ao requisito oficial. |  | Pendente |
+| INT-008 | Implementar integrações dos bancos permitidos selecionados pela equipe para atender persistência poliglota. | Integração | Baixa | Grande | BD-009 | Pelo menos dois bancos funcionam simultaneamente com DAOs/repositories e configuração local documentada. |  | Pendente |
 
 ## Épico 7 — Testes e finalização
 

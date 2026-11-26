@@ -1,142 +1,131 @@
-# Diagramas conceituais do AmazOFF
+# Diagramas do AmazOFF
 
-Este documento reúne diagramas de arquitetura e estruturas de dados previstos para apoiar a discussão e a implementação futura. Eles descrevem propostas e não comprovam funcionalidades implementadas. A separação entre os bancos é uma hipótese inicial sujeita à validação acadêmica.
+Os diagramas abaixo resumem a separação por disciplina. A especificação detalhada de entidades, atributos, operações, agregados e pendências está em [`specification/README.md`](specification/README.md). A distribuição de bancos permanece proposta até aprovação.
 
-## 1. Arquitetura geral
+## Entregas separadas
 
 ```mermaid
 flowchart LR
-  U[Pessoa usuária] <--> FE[Frontend: HTML, CSS e JavaScript]
-  FE <-->|HTTP e JSON| API[API REST: Java e Spring Boot]
-  API --> SV[Serviços e regras de negócio]
-  SV --> EM[EstoqueManager]
-  EM --> H[Tabela Hash]
-  EM --> ABB[Árvore Binária de Busca]
-  SV --> REP[Camada de persistência proposta]
-  REP --> R[(Riak KV)]
-  REP --> M[(MongoDB)]
-  REP --> C[(Cassandra — fase posterior)]
-  REP --> N[(Neo4j — fase posterior)]
+  subgraph TW[Tecnologias Web]
+    U[Interface] --> JS[Serviços JavaScript]
+    JS --> MEM[(Arrays e objetos em memória)]
+    JS --> U
+  end
+  subgraph ED[Estrutura de Dados]
+    IM[InventoryManager] --> ABB[ABB própria]
+    IM --> HASH[Tabela hash própria]
+  end
+  subgraph BD[Banco de Dados II]
+    CLI[Terminal e menus] --> SVC[Serviços]
+    SVC --> REPO[DAO / Repository]
+    REPO --> M[(MongoDB proposto)]
+    REPO --> R[(Riak proposto)]
+    REPO --> C[(Cassandra proposto)]
+  end
 ```
 
-## 2. Comunicação frontend/backend
+## Modelo conceitual
 
 ```mermaid
-sequenceDiagram
-  actor U as Pessoa usuária
-  participant FE as Frontend HTML/CSS/JS
-  participant API as API REST Java/Spring Boot
-  participant S as Serviço de produtos
-  participant EM as EstoqueManager
-  participant DB as Persistência proposta
-  U->>FE: Interage com catálogo ou controles
-  FE->>API: Requisição HTTP com JSON
-  API->>S: Encaminha operação validada
-  S->>EM: Coordena operação nas estruturas
-  EM-->>S: Resultado conceitual
-  S->>DB: Leitura ou gravação prevista
-  DB-->>S: Resultado da persistência prevista
-  S-->>API: Resultado da operação
-  API-->>FE: Resposta HTTP com JSON
-  FE-->>U: Apresenta resultado
+erDiagram
+  PRODUCT ||--o{ REVIEW : receives
+  CUSTOMER ||--o{ ADDRESS : has
+  CUSTOMER ||--o{ CART : owns
+  CART ||--o{ CART_ITEM : contains
+  PRODUCT ||--o{ CART_ITEM : referenced_by
+  PRODUCT ||--o{ PRODUCT_METRIC_DAILY : measured_by
 ```
 
-O fluxo representa uma comunicação planejada. Serviços, persistência e integração não são declarados como concluídos.
+Cada `productId` em Review, CartItem e métricas referencia exatamente `Product.id`. Em Estrutura de Dados, a chave “código” da busca é o próprio `Product.id`, sem outro atributo identificador.
 
-## 3. Fluxo de gerenciamento de produtos
+### Entidades e atributos do domínio
 
-```mermaid
-flowchart TD
-  A[Solicitação recebida pela API] --> B{Operação}
-  B -->|Cadastrar| C[Verificar código na Hash]
-  C --> D{Código disponível?}
-  D -->|Sim| E[Inserir referência em Hash e ABB]
-  D -->|Não| F[Informar duplicidade]
-  B -->|Consultar por código| G[Buscar na Hash]
-  B -->|Atualizar estoque| H[Localizar produto e alterar quantidade]
-  B -->|Remover| I[Remover da Hash e da ABB]
-  B -->|Listar| J[Percorrer ABB em ordem]
-  B -->|Estoque baixo| K[Comparar quantidade com mínimo]
-  E --> L[Resultado planejado]
-  F --> L
-  G --> L
-  H --> L
-  I --> L
-  J --> L
-  K --> L
-```
+O identificador interno de todo produto é unicamente `Product.id`. Na atividade ED, a expressão “código do produto” refere-se ao mesmo `id`, usado como chave da ABB e da tabela hash. Não existe campo `codigo` adicional. Referências como `productId` abaixo armazenam o valor de `Product.id`; não são uma segunda identidade.
 
-## 4. Organização conceitual das estruturas de dados
+| Entidade | Responsabilidade | Identificador e atributos (tipos lógicos) | Relacionamentos |
+|---|---|---|---|
+| Product | Dados comuns do catálogo e estoque | `id: String` (representação técnica pendente); `name: String`; `description: String`; `price: Decimal`; `category/categoryId: String`; `brand: String`; `image: String`; `stock: Integer`; `createdAt: Instant`; `soldQuantity: Long` (BD); reviews/average derivados ou associados | 1 Product recebe 0..N Review; pode ser referenciado por CartItem e métricas. |
+| Review | Nota e comentário de um produto | `reviewId: String`; `productId: Product.id`; `score: Decimal/Integer`; `comment: String`; `createdAt: Instant` | Cada Review pertence a exatamente um Product. Escala de nota pendente. |
+| Customer | Cadastro e dados de acesso | `customerId: String`; `email: String`; `passwordHash: String`; `accessData: Map<String,String>`; `createdAt/updatedAt: Instant` | 1 Customer tem 0..N Address e pode ter 0..N Cart (históricos). |
+| Address | Endereço de entrega do cliente | `addressId: String`; destinatário, rua, número, complemento?, bairro, cidade, estado, CEP, país, instruções? (`String`) | Pertence a um Customer; cardinalidade 0..N. Campos exatos ainda são recomendação. |
+| Cart | Agregado efêmero associado ao cliente, TTL 48h | `cartId: String`; `customerId: String`; `createdAt/updatedAt/expiresAt: Instant`; `items: CartItem[]`; `status: ACTIVE/EXPIRED` (derivado) | Um Customer possui carrinhos; acesso rápido por cliente. Não exige durabilidade permanente. |
+| CartItem | Produto, quantidade e preço no carrinho | `productId: Product.id`; `quantity: Integer`; `unitPrice: Decimal`; `productNameSnapshot?: String` | Interno a exatamente um Cart; referencia um Product por id; snapshot de preço/política pendentes. |
+| ProductMetricEvent | Ocorrência de visualização, adição ou remoção | `eventId: String`; `productId: Product.id`; `eventType: VIEW/ADD/REMOVE`; `occurredAt: Instant`; `quantity?: Integer`; `windowStart: Instant` | Cada evento refere-se a um Product; identidade de usuário não é necessária para a contagem global transcrita. |
+| ProductMetricDaily | Contadores agregados por produto e janela de 24h | `productId: Product.id`; `dayUtc: LocalDate`; `views/cartAdds/cartRemovals: Long`; `aggregatedAt: Instant` | Projeção de eventos de um Product numa janela diária; não representa quantidade vendida. |
+
+`averageRating`, `subtotal` e total do carrinho são valores derivados das avaliações/itens; persistir cópias exige política de atualização. `soldQuantity` é exigido no catálogo BD, mas seu significado e relação com estoque ainda precisam ser confirmados. A imutabilidade de `Product.id` após criação é recomendada, mas permanece decisão técnica. `TreeNode`, `HashEntry` e `Bucket` são estruturas internas ED, não entidades persistidas do domínio.
+
+## Estruturas ED
 
 ```mermaid
 classDiagram
-  class EstoqueManager {
-    coordena operações
-    mantém consistência
+  class Product {
+    String id
+    String name
+    String description
+    Decimal price
+    String category
+    String brand
+    String image
+    Integer stock
+    Instant createdAt
   }
-  class TabelaHash {
-    chave: codigo
-    colisões: encadeamento separado
-    consulta média: O(1)
-    pior caso: O(n)
+  class Review {
+    String reviewId
+    String productId
+    Number score
+    String comment
+    Instant createdAt
   }
-  class ArvoreBinariaBusca {
-    ordenação: codigo
-    percurso: in-order
-    caso balanceado: O(log n)
-    pior caso: O(n)
-    balanceamento automático: não previsto
+  class TreeNode {
+    Product product
+    TreeNode left
+    TreeNode right
   }
-  class Produto {
-    codigo: String
-    nome: String
-    quantidade: Integer
+  class ProductHashTable {
+    Bucket[] buckets
+    put(Product)
+    get(id)
+    remove(id)
   }
-  EstoqueManager --> TabelaHash : coordena
-  EstoqueManager --> ArvoreBinariaBusca : coordena
-  TabelaHash --> Produto : referência compartilhada
-  ArvoreBinariaBusca --> Produto : mesma referência
+  class InventoryManager {
+    register(Product)
+    find(id)
+    updateStock(id, quantity)
+    delete(id)
+    listByCode()
+    lowStock()
+  }
+  class BinarySearchTree {
+    insert(Product)
+    search(id)
+    remove(id)
+    inOrder()
+  }
+  class ProductHashTable {
+    put(Product)
+    get(id)
+    remove(id)
+  }
+  InventoryManager --> BinarySearchTree
+  InventoryManager --> ProductHashTable
+  TreeNode --> Product
+  Product --> Review
 ```
 
-A listagem crescente pela ABB percorre `n` nós e custa O(n). As duas estruturas devem apontar para o mesmo objeto Produto para evitar divergência de dados.
-
-### Colisões na Tabela Hash
-
-```mermaid
-flowchart LR
-  K1[Código A] --> F[Função de hash]
-  K2[Código B] --> F
-  F --> B[Mesmo bucket calculado]
-  B --> E1[Entrada A]
-  E1 --> E2[Entrada B encadeada]
-```
-
-Com distribuição adequada, a consulta esperada é O(1); no pior caso, uma cadeia com todas as `n` entradas resulta em O(n).
-
-### Percurso in-order da ABB
-
-```mermaid
-flowchart LR
-  E[Subárvore esquerda] --> N[Nó atual]
-  N --> D[Subárvore direita]
-  D --> O[Sequência crescente por código]
-```
-
-## 5. Organização conceitual dos bancos
+## Fluxos de persistência BD propostos
 
 ```mermaid
 flowchart TB
-  APP[Aplicação Java: integração proposta] --> F1[Fase 1 — prioridade inicial]
-  APP --> F2[Fase 2 — posterior]
-  F1 --> R[Riak KV: registros brutos DummyJSON e CRUD por chave]
-  F1 --> M[MongoDB: catálogo operacional e documentos de produtos]
-  M -. opcional, se escopo confirmado .-> AV[Avaliações e informações complementares]
-  F2 --> C[Cassandra: histórico de movimentações por produto e período]
-  F2 --> N[Neo4j: relações entre produtos, categorias e marcas]
+  MENU[Menu terminal] --> SERVICE[Serviço de aplicação]
+  SERVICE --> CUSTOMER[Customer Repository]
+  SERVICE --> PRODUCT[Product Repository]
+  SERVICE --> CART[Cart Repository]
+  SERVICE --> METRIC[Metric Repository]
+  CUSTOMER --> M[(MongoDB: clientes)]
+  PRODUCT --> M2[(MongoDB: catálogo)]
+  CART --> R[(Riak: carrinho TTL 48h)]
+  METRIC --> C[(Cassandra: eventos e agregado diário)]
 ```
 
-As responsabilidades dos quatro bancos são hipóteses arquiteturais, não requisitos aprovados. As especificações do professor de Banco de Dados II ainda serão recebidas.
-
-## Histórico conceitual
-
-A primeira modelagem usava Node.js e armazenamento apenas em memória para ilustrar a Hash e a ABB. Essa etapa conceitual permanece registrada, mas a arquitetura atualmente planejada considera backend Java/Spring Boot e persistência NoSQL. A mudança de proposta não altera os conceitos didáticos das estruturas: suas complexidades e a necessidade de manter referências compartilhadas continuam documentadas.
+MongoDB/Riak/Cassandra são uma recomendação de distribuição, sujeita à escolha de ao menos dois bancos e justificativa da equipe. Não há API REST obrigatória na especificação transcrita. A configuração Spring Boot do projeto Gradle não representa, sozinha, a entrega BD concluída.

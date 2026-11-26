@@ -1,5 +1,5 @@
-# API REST
+# API e comunicação entre entregas
 
-A API REST será o ponto de comunicação entre a interface web e o backend Java/Spring Boot. O frontend fará requisições HTTP e enviará ou receberá dados em JSON; o backend encaminhará as operações às regras de negócio, estruturas de dados e persistência.
+As transcrições oficiais disponíveis não exigem uma API HTTP para Tecnologias Web nem para Banco de Dados II: Web armazena dados em arrays/objetos JavaScript; BD II requer aplicação Java/Gradle com interface de terminal. Portanto, endpoints REST descritos em artefatos anteriores são proposta histórica, não contrato aprovado.
 
-O contrato detalhado — recursos, endpoints, métodos, formatos, validações e erros — será documentado aqui quando for efetivamente definido e revisado pela equipe. Até lá, nenhum endpoint é considerado definitivo. Consulte [Arquitetura](../architecture/README.md) para o fluxo planejado e o [Backlog](../backlog/README.md) para a atividade de definição do contrato.
+Se a equipe decidir integrar entregas via API em etapa futura, definir contrato, autenticação, formatos e critérios em nova decisão. Essa integração não pode remover os critérios originais de armazenamento em memória da entrega Web nem os menus de terminal exigidos pela entrega BD. Ver [especificação integrada](../specification/README.md).

@@ -1,3 +1,5 @@
+> **Arquivo histórico, não normativo:** registra uma proposta inicial anterior à separação/consolidação das três disciplinas. Use [`../docs/specification/README.md`](../docs/specification/README.md) como referência vigente.
+
 Atue como um Arquiteto de Sistemas e Especialista em Documentação Técnica. Vamos iniciar o repositório do projeto **Sistema de Gerenciamento de Produtos e Estoque** (inspirado na experiência organizacional e visual de um catálogo/painel estilo Amazon), integrando as disciplinas de **Desenvolvimento Web** e **Estrutura de Dados**.
 
 ### REGRA CRÍTICA (LEIA COM ATENÇÃO):

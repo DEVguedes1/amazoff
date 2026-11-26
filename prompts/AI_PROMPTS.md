@@ -1,3 +1,5 @@
+> **Arquivo histórico, não normativo:** inclui propostas antigas de stack e arquitetura, algumas incompatíveis com os requisitos consolidados. Use [`../docs/specification/README.md`](../docs/specification/README.md) como referência vigente; valide qualquer decisão antiga antes de reutilizá-la.
+
 # Governança e registro de prompts de IA
 
 Todos os prompts enviados às ferramentas de IA no contexto deste projeto devem ser registrados neste arquivo. O registro permite revisar a origem das decisões e identificar os artefatos produzidos. Cada entrada deve preservar o texto integral do prompt, sem paráfrases.
